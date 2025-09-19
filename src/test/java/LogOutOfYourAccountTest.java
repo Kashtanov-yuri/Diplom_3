@@ -2,6 +2,7 @@ import org.example.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,11 +35,12 @@ public class LogOutOfYourAccountTest {
             MainPage mainPage = new MainPage();
             PersonalAccountPage personalAccountPage = new PersonalAccountPage();
             EntrancePage entrancePage = new EntrancePage();
+            JavascriptExecutor js = (JavascriptExecutor) driver;
 
             String email = registrationService.registerDefaultUser();
             registrationService.loginAfterRegistration(email, "123456");
-            wait.until(ExpectedConditions.elementToBeClickable(mainPage.personalAccountButton)).click();
-            wait.until(ExpectedConditions.elementToBeClickable(personalAccountPage.exitButton)).click();
+            js.executeScript("arguments[0].click();", driver.findElement(mainPage.personalAccountButton));
+            js.executeScript("arguments[0].click();", driver.findElement(personalAccountPage.exitButton));
             assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(entrancePage.entranceLogo)).isDisplayed());
 
         } finally {

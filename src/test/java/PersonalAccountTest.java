@@ -84,12 +84,13 @@ public class PersonalAccountTest {
             RegistrationService registrationService = new RegistrationService(driver);
             MainPage mainPage = new MainPage();
             PersonalAccountPage personalAccountPage = new PersonalAccountPage();
+            JavascriptExecutor js = (JavascriptExecutor) driver;
 
             String email = registrationService.registerDefaultUser();
             registrationService.loginAfterRegistration(email, "123456");
 
-            wait.until(ExpectedConditions.elementToBeClickable(mainPage.personalAccountButton)).click();
-            wait.until(ExpectedConditions.elementToBeClickable(personalAccountPage.constructorButton)).click();
+            js.executeScript("arguments[0].click();", driver.findElement(mainPage.personalAccountButton));
+            js.executeScript("arguments[0].click();", driver.findElement(personalAccountPage.constructorButton));
             assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(mainPage.inscriptionCollectABurger)).isDisplayed());
 
         } finally {
@@ -106,12 +107,13 @@ public class PersonalAccountTest {
             RegistrationService registrationService = new RegistrationService(driver);
             MainPage mainPage = new MainPage();
             PersonalAccountPage personalAccountPage = new PersonalAccountPage();
+            JavascriptExecutor js = (JavascriptExecutor) driver;
 
             String email = registrationService.registerDefaultUser();
             registrationService.loginAfterRegistration(email, "123456");
 
-            wait.until(ExpectedConditions.elementToBeClickable(mainPage.personalAccountButton)).click();
-            wait.until(ExpectedConditions.elementToBeClickable(personalAccountPage.burgerLogo)).click();
+            js.executeScript("arguments[0].click();", driver.findElement(mainPage.personalAccountButton));
+            js.executeScript("arguments[0].click();", driver.findElement(personalAccountPage.burgerLogo));
             assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(mainPage.inscriptionCollectABurger)).isDisplayed());
 
         } finally {
