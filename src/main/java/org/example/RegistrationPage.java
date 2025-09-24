@@ -3,15 +3,13 @@ package org.example;
 import org.openqa.selenium.By;
 
 public class RegistrationPage {
-    public final By nameField = By.xpath("/html/body/div/div/main/div/form/fieldset[1]/div/div/input");
-    public final By emailField = By.xpath("/html/body/div/div/main/div/form/fieldset[2]/div/div/input");
-    public final By passwordField = By.xpath("//input[@name='Пароль']");
-    public final By registrationButton = By.xpath("/html/body/div/div/main/div/form/button");
-    public final By invalidPassword = By.xpath("/html/body/div/div/main/div/form/fieldset[3]/div/p");
-    public final By loginButton = By.xpath("/html/body/div/div/main/div/div/p/a");
 
-
-
+    public final By nameField = By.cssSelector("input[name='name']");
+    public final By emailField = By.xpath("//label[text()='Email']/following-sibling::input");
+    public final By passwordField = By.cssSelector("input[name='Пароль']");
+    public final By registrationButton = By.cssSelector("button.button_button__33qZ0");
+    public final By invalidPassword = By.cssSelector(".input__error, .error-message, p.text_color_red");
+    public final By loginButton = By.xpath("//a[text()='Войти']");
 
     public String generateUniqueEmail() {
         return "AutomaticTest_" + System.currentTimeMillis() + "@example.com";

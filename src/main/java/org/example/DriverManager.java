@@ -10,7 +10,23 @@ import java.time.Duration;
 
 public class DriverManager {
 
-    public WebDriver getDriverChrome() {
+    public enum Browser {
+        CHROME,
+        FIREFOX
+    }
+
+    public WebDriver getDriver(Browser browser) {
+        switch (browser) {
+            case CHROME:
+                return createChromeDriver();
+            case FIREFOX:
+                return createFirefoxDriver();
+            default:
+                throw new IllegalArgumentException("Unsupported browser: " + browser);
+        }
+    }
+
+    private WebDriver createChromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
@@ -19,7 +35,7 @@ public class DriverManager {
         return driver;
     }
 
-    public WebDriver getDriverFirefox() {
+    private WebDriver createFirefoxDriver() {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("--start-maximized");

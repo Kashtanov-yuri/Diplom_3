@@ -1,50 +1,48 @@
 import org.example.*;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.JavascriptExecutor;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 
 public class LogOutOfYourAccountTest {
 
-    static Stream<WebDriver> driverProvider() {
-        DriverManager manager = new DriverManager();
-        return Stream.of(
-                manager.getDriverChrome(),
-                manager.getDriverFirefox()
-        );
+    private WebDriver driver;
+    private final DriverManager driverManager = new DriverManager();
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driverManager.quitDriver(driver);
+        }
     }
 
-    private WebDriverWait getWait(WebDriver driver) {
+    private WebDriverWait getWait() {
         return new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     @ParameterizedTest
-    @MethodSource("driverProvider")
+    @EnumSource(DriverManager.Browser.class)
     @DisplayName("Выход из аккаунта")
-    public void testOut(WebDriver driver) {
-        try {
-            WebDriverWait wait = getWait(driver);
-            RegistrationService registrationService = new RegistrationService(driver);
-            MainPage mainPage = new MainPage();
-            PersonalAccountPage personalAccountPage = new PersonalAccountPage();
-            EntrancePage entrancePage = new EntrancePage();
-            JavascriptExecutor js = (JavascriptExecutor) driver;
+    public void testOut(DriverManager.Browser browser) {
+        this.driver = driverManager.getDriver(browser);
+        WebDriverWait wait = getWait();
+        RegistrationService registrationService = new RegistrationService(driver);
+        MainPage mainPage = new MainPage();
+        PersonalAccountPage personalAccountPage = new PersonalAccountPage();
+        EntrancePage entrancePage = new EntrancePage();
 
-            String email = registrationService.registerDefaultUser();
-            registrationService.loginAfterRegistration(email, "123456");
-            js.executeScript("arguments[0].click();", driver.findElement(mainPage.personalAccountButton));
-            js.executeScript("arguments[0].click();", driver.findElement(personalAccountPage.exitButton));
-            assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(entrancePage.entranceLogo)).isDisplayed());
-
-        } finally {
-            new DriverManager().quitDriver(driver);
-        }
+        String email = registrationService.registerDefaultUser();
+        registrationService.loginAfterRegistration(email, "123456");
+        WebElement personalAccountButton = wait.until(ExpectedConditions.elementToBeClickable(mainPage.personalAccountButton));
+        JavaScriptClickHelper.clickWithJavaScript(driver, personalAccountButton);
+        WebElement exitButton = wait.until(ExpectedConditions.elementToBeClickable(personalAccountPage.exitButton));
+        JavaScriptClickHelper.clickWithJavaScript(driver, exitButton);
+        assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(entrancePage.entranceLogo)).isDisplayed());
     }
 }
